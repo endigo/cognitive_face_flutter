@@ -38,7 +38,7 @@ T _$enumDecodeNullable<T>(Map<T, dynamic> enumValues, dynamic source) {
 }
 
 const _$NoiseLevelEnumMap = <NoiseLevel, dynamic>{
-  NoiseLevel.Low: 'Low',
-  NoiseLevel.Medium: 'Medium',
-  NoiseLevel.High: 'High'
+  NoiseLevel.low: 'low',
+  NoiseLevel.medium: 'medium',
+  NoiseLevel.high: 'high'
 };

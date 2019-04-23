@@ -36,11 +36,11 @@ class TrainingStatus {
 
 enum Status {
   /// Training is succeeded.
-  Succeeded,
+  succeeded,
 
   /// Training is failed.
-  Failed,
+  failed,
 
   /// Training is in progress.
-  Running
+  running
 }

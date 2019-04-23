@@ -47,7 +47,7 @@ T _$enumDecodeNullable<T>(Map<T, dynamic> enumValues, dynamic source) {
 }
 
 const _$StatusEnumMap = <Status, dynamic>{
-  Status.Succeeded: 'Succeeded',
-  Status.Failed: 'Failed',
-  Status.Running: 'Running'
+  Status.succeeded: 'succeeded',
+  Status.failed: 'failed',
+  Status.running: 'running'
 };

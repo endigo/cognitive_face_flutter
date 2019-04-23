@@ -39,7 +39,7 @@ T _$enumDecodeNullable<T>(Map<T, dynamic> enumValues, dynamic source) {
 }
 
 const _$ExposureLevelEnumMap = <ExposureLevel, dynamic>{
-  ExposureLevel.UnderExposure: 'UnderExposure',
-  ExposureLevel.GoodExposure: 'GoodExposure',
-  ExposureLevel.OverExposure: 'OverExposure'
+  ExposureLevel.underExposure: 'underExposure',
+  ExposureLevel.goodExposure: 'goodExposure',
+  ExposureLevel.overExposure: 'overExposure'
 };

@@ -32,9 +32,9 @@ class Noise {
 /// Definition of noise level
 enum NoiseLevel {
   /// Low noise level indicating a clear face image
-  Low,
+  low,
   /// Medium noise level indicating a slightly noisy face image
-  Medium,
+  medium,
   /// High noise level indicating a extremely noisy face image
-  High
+  high
 }

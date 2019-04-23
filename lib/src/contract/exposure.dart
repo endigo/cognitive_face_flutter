@@ -32,11 +32,11 @@ class Exposure {
 // Definition of exposure level
 enum ExposureLevel {
   /// Indicating face image is in under exposure
-  UnderExposure,
+  underExposure,
 
   /// Indicating face image is in good exposure
-  GoodExposure,
+  goodExposure,
 
   /// Indicating face image is in over exposure
-  OverExposure
+  overExposure
 }

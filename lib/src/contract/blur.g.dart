@@ -38,7 +38,7 @@ T _$enumDecodeNullable<T>(Map<T, dynamic> enumValues, dynamic source) {
 }
 
 const _$BlurLevelEnumMap = <BlurLevel, dynamic>{
-  BlurLevel.Low: 'Low',
-  BlurLevel.Medium: 'Medium',
-  BlurLevel.High: 'High'
+  BlurLevel.low: 'low',
+  BlurLevel.medium: 'medium',
+  BlurLevel.high: 'high'
 };

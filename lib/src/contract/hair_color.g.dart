@@ -38,12 +38,12 @@ T _$enumDecodeNullable<T>(Map<T, dynamic> enumValues, dynamic source) {
 }
 
 const _$HairColorTypeEnumMap = <HairColorType, dynamic>{
-  HairColorType.Unknown: 'Unknown',
-  HairColorType.White: 'White',
-  HairColorType.Gray: 'Gray',
-  HairColorType.Blond: 'Blond',
-  HairColorType.Brown: 'Brown',
-  HairColorType.Red: 'Red',
-  HairColorType.Black: 'Black',
-  HairColorType.Other: 'Other'
+  HairColorType.unknown: 'unknown',
+  HairColorType.white: 'white',
+  HairColorType.gray: 'gray',
+  HairColorType.blond: 'blond',
+  HairColorType.brown: 'brown',
+  HairColorType.red: 'red',
+  HairColorType.black: 'black',
+  HairColorType.other: 'other'
 };

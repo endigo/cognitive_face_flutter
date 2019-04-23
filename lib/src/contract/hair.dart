@@ -30,12 +30,12 @@ class Hair {
 
 /// Hair color type
 enum HairColorType {
-  Unknown,
-  White,
-  Gray,
-  Blond,
-  Brown,
-  Red,
-  Black,
-  Other,
+  unknown,
+  white,
+  gray,
+  blond,
+  brown,
+  red,
+  black,
+  other,
 }

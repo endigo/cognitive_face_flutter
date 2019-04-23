@@ -36,11 +36,11 @@ class Blur {
 
 enum BlurLevel {
   /// Low blur level indicating a clear face image
-  Low,
+  low,
 
   /// Medium blur level indicating a slightly blurry face image
-  Medium,
+  medium,
 
   /// High blur level indicating a extremely blurry face image
-  High
+  high
 }
