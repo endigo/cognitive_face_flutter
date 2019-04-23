@@ -27,4 +27,9 @@ class FaceRectangle {
   /// to JSON. The implementation simply calls the private, generated
   /// helper method `_$UserToJson`.
   Map<String, dynamic> toJson() => _$FaceRectangleToJson(this);
+
+  @override
+  String toString() {
+    return 'FaceRectangle { top: $top, left: $left, width: $width, height: $height }';
+  }
 }

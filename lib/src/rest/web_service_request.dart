@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 
 import 'package:cognitive_face_flutter/src/common/request_method.dart';
+import 'package:http_parser/http_parser.dart';
 
 const String HEADER_KEY = "Ocp-Apim-Subscription-Key";
 const String CONTENT_TYPE = "Content-Type";
@@ -67,7 +68,8 @@ class WebServiceRequest {
     return jsonResponse;
   }
 
-  Future<dynamic> _patch(String url, Map<String, dynamic> data, String contentType) async {
+  Future<dynamic> _patch(
+      String url, Map<String, dynamic> data, String contentType) async {
     Response response = await mClient.patch(
       url,
       headers: {
@@ -94,17 +96,19 @@ class WebServiceRequest {
     return jsonResponse;
   }
 
-  Future<dynamic> _post(String url, Map<String, dynamic> data, String contentType) async {
+  Future<dynamic> _post(
+      String url, Map<String, dynamic> data, String contentType) async {
+    Response response;
     bool isStream = false;
 
     if (contentType != null &&
-        (contentType.isNotEmpty) &&
+        contentType.isNotEmpty &&
         contentType.toLowerCase().contains(OCTET_STREAM)) {
       isStream = true;
     }
 
     if (!isStream) {
-      var response = await mClient.post(
+      response = await mClient.post(
         url,
         headers: {
           HEADER_KEY: mSubscriptionKey,
@@ -112,62 +116,37 @@ class WebServiceRequest {
         },
         body: json.encode(data),
       );
-
-      final int statusCode = response.statusCode;
-      final String reasonPhrase = response.reasonPhrase;
-      final jsonResponse = json.decode(response.body);
-      if (statusCode >= 400) {
-        if (jsonResponse != null && jsonResponse['error'] != null) {
-          throw ClientException(
-            jsonResponse['error'],
-          );
-        }
-        throw ClientException(
-          'Network Error: $statusCode $reasonPhrase',
-        );
-      }
-
-      return jsonResponse;
     } else {
-      Uri uri = Uri.parse(url);
-      var request = MultipartRequest("POST", uri);
-      var multipartFile = MultipartFile('data', data['data'], data['length']);
+      response = await mClient.post(
+        url,
+        headers: {
+          HEADER_KEY: mSubscriptionKey,
+          CONTENT_TYPE: contentType,
+        },
+        body: data['data'],
+      );
+    }
 
-      request.headers[HEADER_KEY] = mSubscriptionKey;
-      request.headers[CONTENT_TYPE] = contentType;
+    final int statusCode = response.statusCode;
+    final String reasonPhrase = response.reasonPhrase;
+    final jsonResponse = json.decode(response.body);
 
-      request.files.add(multipartFile);
-
-      var response = await request.send();
-
-      final int statusCode = response.statusCode;
-      final String reasonPhrase = response.reasonPhrase;
-
-      Completer<String> c = Completer<String>();
-
-      response.stream.transform(utf8.decoder).listen((String rawJson) {
-        c.complete(rawJson);
-      });
-
-      final String rawJson = await c.future;
-      final jsonResponse = json.decode(rawJson);
-
-      if (statusCode >= 400) {
-        if (jsonResponse != null && jsonResponse['error'] != null) {
-          throw ClientException(
-            jsonResponse['error'],
-          );
-        }
+    if (statusCode >= 400) {
+      if (jsonResponse != null && jsonResponse['error'] != null) {
         throw ClientException(
-          'Network Error: $statusCode $reasonPhrase',
+          jsonResponse['error'],
         );
       }
-
-      return jsonResponse;
+      throw ClientException(
+        'Network Error: $statusCode $reasonPhrase',
+      );
     }
+
+    return jsonResponse;
   }
 
-  Future<dynamic> _put(String url, Map<String, dynamic> data, String contentType) async {
+  Future<dynamic> _put(
+      String url, Map<String, dynamic> data, String contentType) async {
     Response response = await mClient.put(
       url,
       headers: {
