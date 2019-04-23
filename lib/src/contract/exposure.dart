@@ -1,16 +1,9 @@
-// Definition of exposure level
-enum ExposureLevel {
-  /// Indicating face image is in under exposure
-  UnderExposure,
+import 'package:json_annotation/json_annotation.dart';
 
-  /// Indicating face image is in good exposure
-  GoodExposure,
-
-  /// Indicating face image is in over exposure
-  OverExposure
-}
+part 'exposure.g.dart';
 
 /// Exposure class contains exposure information
+@JsonSerializable()
 class Exposure {
   /// Indicating exposure level of face image
   final ExposureLevel exposureLevel;
@@ -24,4 +17,26 @@ class Exposure {
     this.exposureLevel,
     this.value,
   });
+
+  /// A necessary factory constructor for creating a new Exposure instance
+  /// from a map. Pass the map to the generated `_$ExposureFromJson()` constructor.
+  /// The constructor is named after the source class, in this case User.
+  factory Exposure.fromJson(Map<String, dynamic> json) => _$ExposureFromJson(json);
+
+  /// `toJson` is the convention for a class to declare support for serialization
+  /// to JSON. The implementation simply calls the private, generated
+  /// helper method `_$UserToJson`.
+  Map<String, dynamic> toJson() => _$ExposureToJson(this);
+}
+
+// Definition of exposure level
+enum ExposureLevel {
+  /// Indicating face image is in under exposure
+  UnderExposure,
+
+  /// Indicating face image is in good exposure
+  GoodExposure,
+
+  /// Indicating face image is in over exposure
+  OverExposure
 }

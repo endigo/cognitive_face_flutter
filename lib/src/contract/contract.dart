@@ -21,7 +21,7 @@ export 'package:cognitive_face_flutter/src/contract/head_pose.dart';
 export 'package:cognitive_face_flutter/src/contract/identify_result.dart';
 export 'package:cognitive_face_flutter/src/contract/large_face_list.dart';
 export 'package:cognitive_face_flutter/src/contract/large_person_group.dart';
-export 'package:cognitive_face_flutter/src/contract/make_up.dart';
+export 'package:cognitive_face_flutter/src/contract/makeup.dart';
 export 'package:cognitive_face_flutter/src/contract/noise.dart';
 export 'package:cognitive_face_flutter/src/contract/occlusion.dart';
 export 'package:cognitive_face_flutter/src/contract/person.dart';

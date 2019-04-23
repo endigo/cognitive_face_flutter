@@ -1,15 +1,9 @@
-enum BlurLevel {
-  /// Low blur level indicating a clear face image
-  Low,
+import 'package:json_annotation/json_annotation.dart';
 
-  /// Medium blur level indicating a slightly blurry face image
-  Medium,
-
-  /// High blur level indicating a extremely blurry face image
-  High
-}
+part 'blur.g.dart';
 
 /// Blur class contains blur information
+@JsonSerializable()
 class Blur {
   /// Definition of blur level
 
@@ -28,4 +22,25 @@ class Blur {
     this.blurLevel,
     this.value,
   });
+
+  /// A necessary factory constructor for creating a new Blur instance
+  /// from a map. Pass the map to the generated `_$BlurFromJson()` constructor.
+  /// The constructor is named after the source class, in this case User.
+  factory Blur.fromJson(Map<String, dynamic> json) => _$BlurFromJson(json);
+
+  /// `toJson` is the convention for a class to declare support for serialization
+  /// to JSON. The implementation simply calls the private, generated
+  /// helper method `_$UserToJson`.
+  Map<String, dynamic> toJson() => _$BlurToJson(this);
+}
+
+enum BlurLevel {
+  /// Low blur level indicating a clear face image
+  Low,
+
+  /// Medium blur level indicating a slightly blurry face image
+  Medium,
+
+  /// High blur level indicating a extremely blurry face image
+  High
 }

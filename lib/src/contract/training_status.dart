@@ -1,14 +1,8 @@
-enum Status {
-  /// Training is succeeded.
-  Succeeded,
+import 'package:json_annotation/json_annotation.dart';
 
-  /// Training is failed.
-  Failed,
+part 'training_status.g.dart';
 
-  /// Training is in progress.
-  Running
-}
-
+@JsonSerializable()
 class TrainingStatus {
   /// Training status.
   final Status status;
@@ -28,4 +22,25 @@ class TrainingStatus {
     this.lastActionDateTime,
     this.message,
   });
+
+  /// A necessary factory constructor for creating a new TrainingStatus instance
+  /// from a map. Pass the map to the generated `_$TrainingStatusFromJson()` constructor.
+  /// The constructor is named after the source class, in this case User.
+  factory TrainingStatus.fromJson(Map<String, dynamic> json) => _$TrainingStatusFromJson(json);
+
+  /// `toJson` is the convention for a class to declare support for serialization
+  /// to JSON. The implementation simply calls the private, generated
+  /// helper method `_$UserToJson`.
+  Map<String, dynamic> toJson() => _$TrainingStatusToJson(this);
+}
+
+enum Status {
+  /// Training is succeeded.
+  Succeeded,
+
+  /// Training is failed.
+  Failed,
+
+  /// Training is in progress.
+  Running
 }
