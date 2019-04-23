@@ -10,14 +10,14 @@ enum ExposureLevel {
   OverExposure
 }
 
-// Exposure class contains exposure information
+/// Exposure class contains exposure information
 class Exposure {
-  // Indicating exposure level of face image
+  /// Indicating exposure level of face image
   final ExposureLevel exposureLevel;
-  // Exposure value is in range [0, 1]. Larger value means the face image is more brighter.
-  // [0, 0.25) is under exposure.
-  // [0.25, 0.75) is good exposure.
-  // [0.75, 1] is over exposure.
+  /// Exposure value is in range [0, 1]. Larger value means the face image is more brighter.
+  /// [0, 0.25) is under exposure.
+  /// [0.25, 0.75) is good exposure.
+  /// [0.75, 1] is over exposure.
   final double value;
 
   Exposure({

@@ -17,10 +17,10 @@ class Blur {
   final BlurLevel blurLevel;
 
   ///
-  //  Blur value is in range [0, 1]. Larger value means the face image is more blurry.
-  //  [0, 0.25) is low blur level.
-  //  [0.25, 0.75) is medium blur level.
-  //  [0.75, 1] is high blur level.
+  ///  Blur value is in range [0, 1]. Larger value means the face image is more blurry.
+  ///  [0, 0.25) is low blur level.
+  ///  [0.25, 0.75) is medium blur level.
+  ///  [0.75, 1] is high blur level.
   ///
   final double value;
 

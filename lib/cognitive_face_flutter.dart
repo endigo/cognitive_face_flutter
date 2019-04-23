@@ -1,7 +1,6 @@
 library cognitive_face_flutter;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'package:cognitive_face_flutter/src/contract/contract.dart';
+
+export 'package:cognitive_face_flutter/src/face_service_client.dart';
+export 'package:cognitive_face_flutter/src/face_service_rest_client.dart';

@@ -16,57 +16,32 @@ class WebServiceRequest {
   WebServiceRequest(this.mSubscriptionKey);
   // Gson mGson = new Gson();
 
-  request(
+  Future<Map<String, dynamic>> request(
     String url, {
     RequestMethod method,
     Map<String, dynamic> data,
     String contentType,
   }) {
     switch (method) {
+      case RequestMethod.HEAD:
+      case RequestMethod.OPTIONS:
+      case RequestMethod.TRACE:
+        break;
       case RequestMethod.GET:
         return _get(url);
-      case RequestMethod.HEAD:
-        break;
       case RequestMethod.POST:
         return _post(url, data, contentType);
       case RequestMethod.PATCH:
         return _patch(url, data, contentType);
-
       case RequestMethod.DELETE:
-        break;
+        return _delete(url);
       case RequestMethod.PUT:
-        break;
-      case RequestMethod.OPTIONS:
-        break;
-      case RequestMethod.TRACE:
-        break;
+        return _put(url, data, contentType);
     }
+    return null;
   }
 
-  // public Object request(String url, RequestMethod method, Map<String, Object> data, String contentType) throws ClientException, IOException {
-  //     switch (method) {
-  //         case GET:
-  //             return get(url);
-  //         case HEAD:
-  //             break;
-  //         case POST:
-  //             return post(url, data, contentType);
-  //         case PATCH:
-  //             return patch(url, data, contentType);
-  //         case DELETE:
-  //             return delete(url, data);
-  //         case PUT:
-  //             return put(url, data);
-  //         case OPTIONS:
-  //             break;
-  //         case TRACE:
-  //             break;
-  //     }
-
-  //     return null;
-  // }
-
-  _get(String url) async {
+  Future<Map<String, dynamic>> _get(String url) async {
     Response response = await mClient.get(
       url,
       headers: {
@@ -91,7 +66,7 @@ class WebServiceRequest {
     return jsonResponse;
   }
 
-  _patch(String url, Map<String, dynamic> data, String contentType) async {
+  Future<Map<String, dynamic>> _patch(String url, Map<String, dynamic> data, String contentType) async {
     Response response = await mClient.patch(
       url,
       headers: {
@@ -118,7 +93,7 @@ class WebServiceRequest {
     return jsonResponse;
   }
 
-  _post(String url, Map<String, dynamic> data, String contentType) async {
+  Future<Map<String, dynamic>> _post(String url, Map<String, dynamic> data, String contentType) async {
     Response response;
     bool isStream = false;
 
@@ -159,7 +134,7 @@ class WebServiceRequest {
     return jsonResponse;
   }
 
-  _put(String url, Map<String, dynamic> data, String contentType) async {
+  Future<Map<String, dynamic>> _put(String url, Map<String, dynamic> data, String contentType) async {
     Response response = await mClient.put(
       url,
       headers: {
@@ -186,7 +161,7 @@ class WebServiceRequest {
     return jsonResponse;
   }
 
-  _delete(String url) async {
+  Future<Map<String, dynamic>> _delete(String url) async {
     Response response = await mClient.delete(
       url,
       headers: {

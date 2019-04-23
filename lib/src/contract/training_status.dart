@@ -1,25 +1,25 @@
 enum Status {
-  // Training is succeeded.
+  /// Training is succeeded.
   Succeeded,
 
-  // Training is failed.
+  /// Training is failed.
   Failed,
 
-  // Training is in progress.
+  /// Training is in progress.
   Running
 }
 
 class TrainingStatus {
-  // Training status.
+  /// Training status.
   final Status status;
 
-  // Creation date time.
+  /// Creation date time.
   final DateTime createdDateTime;
 
-  // Last action date time.
+  /// Last action date time.
   final DateTime lastActionDateTime;
 
-  // Message. Only when failed
+  /// Message. Only when failed
   final String message;
 
   TrainingStatus({

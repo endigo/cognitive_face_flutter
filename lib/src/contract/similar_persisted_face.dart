@@ -1,8 +1,8 @@
 class SimilarPersistedFace {
-  // The persisted face identifier
+  /// The persisted face identifier
   final String persistedFaceId;
 
-  // The confidence value.
+  /// The confidence value.
   final double confidence;
 
   SimilarPersistedFace({
