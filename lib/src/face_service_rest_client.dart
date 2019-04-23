@@ -1,7 +1,11 @@
+import 'dart:io';
+
+import 'package:async/async.dart';
 import 'package:cognitive_face_flutter/src/common/request_method.dart';
 import 'package:cognitive_face_flutter/src/contract/face.dart';
 import 'package:cognitive_face_flutter/src/face_service_client.dart';
 import 'package:cognitive_face_flutter/src/rest/web_service_request.dart';
+import 'package:http/http.dart';
 
 const String DEFAULT_API_ROOT =
     "https://westus.api.cognitive.microsoft.com/face/v1.0";
@@ -34,12 +38,19 @@ class FaceServiceClient {
   ///
   /// Face
   ///
-  Future<List<Face>> detect(
-    String url, {
+  Future<List<Face>> detect({
+    String url,
+    File image,
     bool returnFaceId = true,
     bool returnFaceLandmarks = false,
     List<FaceAttributeType> returnFaceAttributes,
   }) async {
+    // assert(url != null && image != null);
+
+    // if (url == null && image == null) {
+    //   throw Exception("url or image required");
+    // }
+
     Map<String, dynamic> params = {
       "returnFaceId": returnFaceId,
       "returnFaceLandmarks": returnFaceLandmarks,
@@ -54,11 +65,26 @@ class FaceServiceClient {
     String path = '$serviceHost/$DETECT_QUERY';
     String uri = WebServiceRequest.getUrl(path, params);
 
-    List<dynamic> json = await mRestCall.request(
-      uri,
-      method: RequestMethod.POST,
-      data: {'url': url},
-    );
+    List<dynamic> json;
+
+    if (url != null && image == null) {
+      json = await mRestCall.request(
+        uri,
+        method: RequestMethod.POST,
+        data: {'url': url},
+      );
+    } else if (image != null) {
+      var stream = ByteStream(DelegatingStream.typed(image.openRead()));
+      json = await mRestCall.request(
+        uri,
+        method: RequestMethod.POST,
+        contentType: STREAM_DATA,
+        data: {
+          'data': stream,
+          'length': await image.length(),
+        },
+      );
+    }
 
     List<Face> faces = json
         .map((data) => Face.fromJson((data as Map<String, dynamic>)))

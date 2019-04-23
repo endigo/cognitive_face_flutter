@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cognitive_face_flutter/cognitive_face_flutter.dart';
@@ -14,14 +17,14 @@ void main() {
   final client = FaceServiceClient(key, serviceHost: endpoint);
   test('Example image 1', () async {
 
-    List<Face> faces = await client.detect(exampleImageUrl1, returnFaceAttributes: FaceAttributeType.values, returnFaceLandmarks: true);
+    List<Face> faces = await client.detect(url: exampleImageUrl1, returnFaceAttributes: FaceAttributeType.values, returnFaceLandmarks: true);
 
     expect(faces.length, 1);
   });
 
   test('Example image 2', () async {
 
-    List<Face> faces = await client.detect(exampleImageUrl2, returnFaceAttributes: FaceAttributeType.values, returnFaceLandmarks: true);
+    List<Face> faces = await client.detect(url: exampleImageUrl2, returnFaceAttributes: FaceAttributeType.values, returnFaceLandmarks: true);
 
     expect(faces.length, 1);
   });

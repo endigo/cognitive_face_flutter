@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart';
 
@@ -94,7 +95,6 @@ class WebServiceRequest {
   }
 
   Future<dynamic> _post(String url, Map<String, dynamic> data, String contentType) async {
-    Response response;
     bool isStream = false;
 
     if (contentType != null &&
@@ -104,7 +104,7 @@ class WebServiceRequest {
     }
 
     if (!isStream) {
-      response = await mClient.post(
+      var response = await mClient.post(
         url,
         headers: {
           HEADER_KEY: mSubscriptionKey,
@@ -112,26 +112,59 @@ class WebServiceRequest {
         },
         body: json.encode(data),
       );
-    } else {
-      // TODO: Streamed request
-      throw ClientException("NOT SUPPORTED YET");
-    }
 
-    final int statusCode = response.statusCode;
-    final String reasonPhrase = response.reasonPhrase;
-    final jsonResponse = json.decode(response.body);
-    if (statusCode >= 400) {
-      if (jsonResponse != null && jsonResponse['error'] != null) {
+      final int statusCode = response.statusCode;
+      final String reasonPhrase = response.reasonPhrase;
+      final jsonResponse = json.decode(response.body);
+      if (statusCode >= 400) {
+        if (jsonResponse != null && jsonResponse['error'] != null) {
+          throw ClientException(
+            jsonResponse['error'],
+          );
+        }
         throw ClientException(
-          jsonResponse['error'],
+          'Network Error: $statusCode $reasonPhrase',
         );
       }
-      throw ClientException(
-        'Network Error: $statusCode $reasonPhrase',
-      );
-    }
 
-    return jsonResponse;
+      return jsonResponse;
+    } else {
+      Uri uri = Uri.parse(url);
+      var request = MultipartRequest("POST", uri);
+      var multipartFile = MultipartFile('data', data['data'], data['length']);
+
+      request.headers[HEADER_KEY] = mSubscriptionKey;
+      request.headers[CONTENT_TYPE] = contentType;
+
+      request.files.add(multipartFile);
+
+      var response = await request.send();
+
+      final int statusCode = response.statusCode;
+      final String reasonPhrase = response.reasonPhrase;
+
+      Completer<String> c = Completer<String>();
+
+      response.stream.transform(utf8.decoder).listen((String rawJson) {
+        c.complete(rawJson);
+      });
+
+      final String rawJson = await c.future;
+      final jsonResponse = json.decode(rawJson);
+
+      if (statusCode >= 400) {
+        if (jsonResponse != null && jsonResponse['error'] != null) {
+          throw ClientException(
+            jsonResponse['error'],
+          );
+        }
+        throw ClientException(
+          'Network Error: $statusCode $reasonPhrase',
+        );
+      }
+
+      return jsonResponse;
+    }
   }
 
   Future<dynamic> _put(String url, Map<String, dynamic> data, String contentType) async {
