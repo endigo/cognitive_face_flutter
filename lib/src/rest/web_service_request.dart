@@ -3,7 +3,7 @@ import 'package:http/http.dart';
 
 import 'package:cognitive_face_flutter/src/common/request_method.dart';
 
-const String HEADER_KEY = "ocp-apim-subscription-key";
+const String HEADER_KEY = "Ocp-Apim-Subscription-Key";
 const String CONTENT_TYPE = "Content-Type";
 const String APPLICATION_JSON = "application/json";
 const String OCTET_STREAM = "octet-stream";
@@ -16,7 +16,7 @@ class WebServiceRequest {
   WebServiceRequest(this.mSubscriptionKey);
   // Gson mGson = new Gson();
 
-  Future<Map<String, dynamic>> request(
+  Future<dynamic> request(
     String url, {
     RequestMethod method,
     Map<String, dynamic> data,
@@ -41,7 +41,7 @@ class WebServiceRequest {
     return null;
   }
 
-  Future<Map<String, dynamic>> _get(String url) async {
+  Future<dynamic> _get(String url) async {
     Response response = await mClient.get(
       url,
       headers: {
@@ -51,8 +51,8 @@ class WebServiceRequest {
 
     final int statusCode = response.statusCode;
     final String reasonPhrase = response.reasonPhrase;
-    final Map<String, dynamic> jsonResponse = json.decode(response.body);
-    if (statusCode < 200 || statusCode >= 400) {
+    final jsonResponse = json.decode(response.body);
+    if (statusCode >= 400) {
       if (jsonResponse != null && jsonResponse['error'] != null) {
         throw ClientException(
           jsonResponse['error'],
@@ -66,7 +66,7 @@ class WebServiceRequest {
     return jsonResponse;
   }
 
-  Future<Map<String, dynamic>> _patch(String url, Map<String, dynamic> data, String contentType) async {
+  Future<dynamic> _patch(String url, Map<String, dynamic> data, String contentType) async {
     Response response = await mClient.patch(
       url,
       headers: {
@@ -78,8 +78,8 @@ class WebServiceRequest {
 
     final int statusCode = response.statusCode;
     final String reasonPhrase = response.reasonPhrase;
-    final Map<String, dynamic> jsonResponse = json.decode(response.body);
-    if (statusCode < 200 || statusCode >= 400) {
+    final jsonResponse = json.decode(response.body);
+    if (statusCode >= 400) {
       if (jsonResponse != null && jsonResponse['error'] != null) {
         throw ClientException(
           jsonResponse['error'],
@@ -93,7 +93,7 @@ class WebServiceRequest {
     return jsonResponse;
   }
 
-  Future<Map<String, dynamic>> _post(String url, Map<String, dynamic> data, String contentType) async {
+  Future<dynamic> _post(String url, Map<String, dynamic> data, String contentType) async {
     Response response;
     bool isStream = false;
 
@@ -119,8 +119,8 @@ class WebServiceRequest {
 
     final int statusCode = response.statusCode;
     final String reasonPhrase = response.reasonPhrase;
-    final Map<String, dynamic> jsonResponse = json.decode(response.body);
-    if (statusCode < 200 || statusCode >= 400) {
+    final jsonResponse = json.decode(response.body);
+    if (statusCode >= 400) {
       if (jsonResponse != null && jsonResponse['error'] != null) {
         throw ClientException(
           jsonResponse['error'],
@@ -134,7 +134,7 @@ class WebServiceRequest {
     return jsonResponse;
   }
 
-  Future<Map<String, dynamic>> _put(String url, Map<String, dynamic> data, String contentType) async {
+  Future<dynamic> _put(String url, Map<String, dynamic> data, String contentType) async {
     Response response = await mClient.put(
       url,
       headers: {
@@ -146,8 +146,8 @@ class WebServiceRequest {
 
     final int statusCode = response.statusCode;
     final String reasonPhrase = response.reasonPhrase;
-    final Map<String, dynamic> jsonResponse = json.decode(response.body);
-    if (statusCode < 200 || statusCode >= 400) {
+    final dynamic jsonResponse = json.decode(response.body);
+    if (statusCode >= 400) {
       if (jsonResponse != null && jsonResponse['error'] != null) {
         throw ClientException(
           jsonResponse['error'],
@@ -161,7 +161,7 @@ class WebServiceRequest {
     return jsonResponse;
   }
 
-  Future<Map<String, dynamic>> _delete(String url) async {
+  Future<dynamic> _delete(String url) async {
     Response response = await mClient.delete(
       url,
       headers: {
@@ -172,8 +172,8 @@ class WebServiceRequest {
 
     final int statusCode = response.statusCode;
     final String reasonPhrase = response.reasonPhrase;
-    final Map<String, dynamic> jsonResponse = json.decode(response.body);
-    if (statusCode < 200 || statusCode >= 400) {
+    final jsonResponse = json.decode(response.body);
+    if (statusCode >= 400) {
       if (jsonResponse != null && jsonResponse['error'] != null) {
         throw ClientException(
           jsonResponse['error'],
@@ -188,7 +188,7 @@ class WebServiceRequest {
   }
 
   static String getUrl(String path, Map<String, dynamic> params) {
-    var buffer = StringBuffer();
+    var buffer = StringBuffer(path);
 
     bool start = true;
     params.forEach((String key, dynamic value) {

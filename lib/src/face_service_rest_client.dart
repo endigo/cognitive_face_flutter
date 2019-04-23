@@ -1,11 +1,10 @@
-
-
 import 'package:cognitive_face_flutter/src/common/request_method.dart';
 import 'package:cognitive_face_flutter/src/contract/face.dart';
 import 'package:cognitive_face_flutter/src/face_service_client.dart';
 import 'package:cognitive_face_flutter/src/rest/web_service_request.dart';
 
-const String DEFAULT_API_ROOT = "https://westus.api.cognitive.microsoft.com/face/v1.0";
+const String DEFAULT_API_ROOT =
+    "https://westus.api.cognitive.microsoft.com/face/v1.0";
 const String DETECT_QUERY = "detect";
 const String VERIFY_QUERY = "verify";
 const String TRAIN_QUERY = "train";
@@ -27,41 +26,44 @@ class FaceServiceClient {
   WebServiceRequest mRestCall;
   String serviceHost;
 
-  FaceServiceClient(String subscriptionKey, { this.serviceHost = DEFAULT_API_ROOT }) {
-     mRestCall = WebServiceRequest(subscriptionKey);
+  FaceServiceClient(String subscriptionKey,
+      {this.serviceHost = DEFAULT_API_ROOT}) {
+    mRestCall = WebServiceRequest(subscriptionKey);
   }
 
   ///
   /// Face
   ///
-  Future<List<Face>> detect(String url, {bool returnFaceId = true, bool returnFaceLandmarks = false, List<FaceAttributeType> returnFaceAttributes}) async {
+  Future<List<Face>> detect(
+    String url, {
+    bool returnFaceId = true,
+    bool returnFaceLandmarks = false,
+    List<FaceAttributeType> returnFaceAttributes,
+  }) async {
     Map<String, dynamic> params = {
       "returnFaceId": returnFaceId,
       "returnFaceLandmarks": returnFaceLandmarks,
     };
 
     if (returnFaceAttributes != null && returnFaceAttributes.isNotEmpty) {
-      params['returnFaceAttributes'] = returnFaceAttributes.map((FaceAttributeType type) => type.toString().split('.')[1]).join(',');;
+      params['returnFaceAttributes'] = returnFaceAttributes
+          .map((FaceAttributeType type) => type.toString().split('.')[1])
+          .join(',');
     }
 
     String path = '$serviceHost/$DETECT_QUERY';
     String uri = WebServiceRequest.getUrl(path, params);
 
-    params = {
-      'url': url,
-    };
+    List<dynamic> json = await mRestCall.request(
+      uri,
+      method: RequestMethod.POST,
+      data: {'url': url},
+    );
 
-    Map<String, dynamic> json = await mRestCall.request(uri, method: RequestMethod.POST, data: params);
+    List<Face> faces = json
+        .map((data) => Face.fromJson((data as Map<String, dynamic>)))
+        .toList();
 
-    // params.clear();
-    // params.put("url", url);
-
-    // String json = (String)mRestCall.request(uri, RequestMethod.POST, params, null);
-    // Type listType = new TypeToken<List<Face>>() {
-    // }.getType();
-    // List<Face> faces = mGson.fromJson(json, listType);
-
-    // return faces.toArray(new Face[faces.size()]);
-    return [];
+    return faces;
   }
 }
