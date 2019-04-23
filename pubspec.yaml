@@ -1,8 +1,8 @@
 name: cognitive_face_flutter
-description: A new Flutter package project.
+description: "Microsoft Face API: Flutter Client Library & Sample"
 version: 0.0.1
-author:
-homepage:
+author: endigo
+homepage: https://github.com/endigo/cognitive_face_flutter
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
