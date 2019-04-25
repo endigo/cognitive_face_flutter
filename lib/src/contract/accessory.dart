@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
 part 'accessory.g.dart';
+
 /// Accessory class contains accessory information
 @JsonSerializable()
 class Accessory {
@@ -18,7 +19,8 @@ class Accessory {
   /// A necessary factory constructor for creating a new Accessory instance
   /// from a map. Pass the map to the generated `_$AccessoryFromJson()` constructor.
   /// The constructor is named after the source class, in this case User.
-  factory Accessory.fromJson(Map<String, dynamic> json) => _$AccessoryFromJson(json);
+  factory Accessory.fromJson(Map<String, dynamic> json) =>
+      _$AccessoryFromJson(json);
 
   /// `toJson` is the convention for a class to declare support for serialization
   /// to JSON. The implementation simply calls the private, generated

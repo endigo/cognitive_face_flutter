@@ -4,6 +4,7 @@ import 'package:cognitive_face_flutter/src/contract/face_rectangle.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'face.g.dart';
+
 @JsonSerializable()
 class Face {
   final String faceId;

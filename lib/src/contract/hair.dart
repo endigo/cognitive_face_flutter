@@ -11,6 +11,7 @@ class Hair {
 
   /// Indicating whether hair is occluded or not
   final bool invisible;
+
   /// Indicating all possible hair colors with confidences
   final List<HairColor> hairColor;
 
@@ -26,7 +27,6 @@ class Hair {
   /// helper method `_$UserToJson`.
   Map<String, dynamic> toJson() => _$HairToJson(this);
 }
-
 
 /// Hair color type
 enum HairColorType {

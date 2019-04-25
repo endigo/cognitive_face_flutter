@@ -112,7 +112,7 @@ class FaceServiceClient {
   /// @param personGroupId The person group Id
   /// @param personId The person Id
   /// @return The verification result.
-  /// 
+  ///
   Future<VerifyResult> verify(
     String faceId1, {
     String faceId2,
@@ -131,7 +131,7 @@ class FaceServiceClient {
       params["personGroupId"] = personGroupId;
       params["personId"] = personId;
     }
- 
+
     String uri = '$serviceHost/$VERIFY_QUERY';
 
     var json = await mRestCall.request(

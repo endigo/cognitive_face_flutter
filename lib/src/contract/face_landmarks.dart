@@ -3,6 +3,7 @@ import 'package:cognitive_face_flutter/src/contract/feature_coordinate.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'face_landmarks.g.dart';
+
 @JsonSerializable()
 class FaceLandmarks {
   final FeatureCoordinate pupilLeft;
@@ -92,7 +93,8 @@ class FaceLandmarks {
   /// A necessary factory constructor for creating a new FaceLandmarks instance
   /// from a map. Pass the map to the generated `_$FaceLandmarksFromJson()` constructor.
   /// The constructor is named after the source class, in this case User.
-  factory FaceLandmarks.fromJson(Map<String, dynamic> json) => _$FaceLandmarksFromJson(json);
+  factory FaceLandmarks.fromJson(Map<String, dynamic> json) =>
+      _$FaceLandmarksFromJson(json);
 
   /// `toJson` is the convention for a class to declare support for serialization
   /// to JSON. The implementation simply calls the private, generated

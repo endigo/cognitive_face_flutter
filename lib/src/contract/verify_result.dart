@@ -16,7 +16,8 @@ class VerifyResult {
   /// A necessary factory constructor for creating a new VerifyResult instance
   /// from a map. Pass the map to the generated `_$VerifyResultFromJson()` constructor.
   /// The constructor is named after the source class, in this case User.
-  factory VerifyResult.fromJson(Map<String, dynamic> json) => _$VerifyResultFromJson(json);
+  factory VerifyResult.fromJson(Map<String, dynamic> json) =>
+      _$VerifyResultFromJson(json);
 
   /// `toJson` is the convention for a class to declare support for serialization
   /// to JSON. The implementation simply calls the private, generated

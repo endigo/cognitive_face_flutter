@@ -12,6 +12,7 @@ import 'package:cognitive_face_flutter/src/contract/occlusion.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'face_attribute.g.dart';
+
 @JsonSerializable()
 class FaceAttribute {
   final double age;
@@ -62,7 +63,8 @@ class FaceAttribute {
   /// A necessary factory constructor for creating a new FaceAttribute instance
   /// from a map. Pass the map to the generated `_$FaceAttributeFromJson()` constructor.
   /// The constructor is named after the source class, in this case User.
-  factory FaceAttribute.fromJson(Map<String, dynamic> json) => _$FaceAttributeFromJson(json);
+  factory FaceAttribute.fromJson(Map<String, dynamic> json) =>
+      _$FaceAttributeFromJson(json);
 
   /// `toJson` is the convention for a class to declare support for serialization
   /// to JSON. The implementation simply calls the private, generated

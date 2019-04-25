@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
 part 'noise.g.dart';
+
 /// Noise class contains noise information
 @JsonSerializable()
 class Noise {
@@ -33,8 +34,10 @@ class Noise {
 enum NoiseLevel {
   /// Low noise level indicating a clear face image
   low,
+
   /// Medium noise level indicating a slightly noisy face image
   medium,
+
   /// High noise level indicating a extremely noisy face image
   high
 }

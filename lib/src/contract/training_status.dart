@@ -26,7 +26,8 @@ class TrainingStatus {
   /// A necessary factory constructor for creating a new TrainingStatus instance
   /// from a map. Pass the map to the generated `_$TrainingStatusFromJson()` constructor.
   /// The constructor is named after the source class, in this case User.
-  factory TrainingStatus.fromJson(Map<String, dynamic> json) => _$TrainingStatusFromJson(json);
+  factory TrainingStatus.fromJson(Map<String, dynamic> json) =>
+      _$TrainingStatusFromJson(json);
 
   /// `toJson` is the convention for a class to declare support for serialization
   /// to JSON. The implementation simply calls the private, generated

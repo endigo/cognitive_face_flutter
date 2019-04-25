@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
 part 'makeup.g.dart';
+
 /// Makeup contains makeup information
 @JsonSerializable()
 class Makeup {
