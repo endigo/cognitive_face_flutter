@@ -67,7 +67,6 @@ class FaceServiceClient {
 
     String path = '$serviceHost/$DETECT_QUERY';
     String uri = WebServiceRequest.getUrl(path, params);
-    print(uri);
 
     List<dynamic> json;
 
@@ -87,8 +86,6 @@ class FaceServiceClient {
         },
       );
     }
-
-    print((json as List).first['recognitionModel']);
 
     List<Face> faces = json
         .map((data) => Face.fromJson((data as Map<String, dynamic>)))
