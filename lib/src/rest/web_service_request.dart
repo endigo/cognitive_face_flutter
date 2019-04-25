@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:http/http.dart';
 
 import 'package:cognitive_face_flutter/src/common/request_method.dart';
-import 'package:http_parser/http_parser.dart';
 
 const String HEADER_KEY = "Ocp-Apim-Subscription-Key";
 const String CONTENT_TYPE = "Content-Type";

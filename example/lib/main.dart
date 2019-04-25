@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:cognitive_face_flutter/cognitive_face_flutter.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:image_cropper/image_cropper.dart';
+// import 'package:image_picker/image_picker.dart';
+// import 'package:image_cropper/image_cropper.dart';
 
 // Replace with your endpoint
 final endpoint = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0";

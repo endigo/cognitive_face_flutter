@@ -37,6 +37,17 @@ class FaceServiceClient {
   ///
   /// Face
   ///
+
+  ///
+  /// Detects faces in an URL image.
+  /// @param url url.
+  /// @param returnFaceId Return faceIds of the detected faces or not. The default value is true.
+  /// @param returnFaceLandmarks Return face landmarks of the detected faces or not. The default value is false.
+  /// @param returnFaceAttributes Analyze and return the one or more specified face attributes in the comma-separated string like "returnFaceAttributes=age,gender". Supported face attributes include age, gender, headPose, smile, facialHair, glasses, emotion, hair, makeup, occlusion, accessories, blur, exposure and noise. Face attribute analysis has additional computational and time cost.
+  /// @param returnRecognitionModel Return 'recognitionModel' or not. The default value is false.
+  /// @param recognitionModel The 'recognitionModel' associated with the detected faceIds. Supported 'recognitionModel' values include "recognition_01" or "recognition_02". The default value is "recognition_01". "recognition_02" is recommended since its overall accuracy is improved compared with "recognition_01".
+  /// @return detected faces.
+  ///
   Future<List<Face>> detect({
     String url,
     File image,
@@ -94,12 +105,33 @@ class FaceServiceClient {
     return faces;
   }
 
-  Future<VerifyResult> verify(String faceId1, String faceId2) async {
+  ///
+  /// Verifies whether the specified two faces belong to the same person.
+  /// @param faceId1 The face id 1.
+  /// @param faceId2 The face id 2.
+  /// @param personGroupId The person group Id
+  /// @param personId The person Id
+  /// @return The verification result.
+  /// 
+  Future<VerifyResult> verify(
+    String faceId1, {
+    String faceId2,
+    String personGroupId,
+    String personId,
+  }) async {
+    assert(faceId2 != null || (personGroupId != null && personId != null));
+
     Map<String, Object> params = {
       "faceId1": faceId1,
-      "faceId2": faceId2,
     };
 
+    if (faceId2 != null && faceId2.isNotEmpty) {
+      params['faceId2'] = faceId2;
+    } else {
+      params["personGroupId"] = personGroupId;
+      params["personId"] = personId;
+    }
+ 
     String uri = '$serviceHost/$VERIFY_QUERY';
 
     var json = await mRestCall.request(
@@ -109,16 +141,4 @@ class FaceServiceClient {
     );
     return VerifyResult.fromJson((json as Map<String, dynamic>));
   }
-
-  // VerifyResult verify(UUID faceId, String personGroupId, UUID personId) throws ClientException, IOException {
-  //     Map<String, Object> params = new HashMap<>();
-
-  //     String uri = String.format("%s/%s", mServiceHost, VERIFY_QUERY);
-  //     params.put("faceId", faceId);
-  //     params.put("personGroupId", personGroupId);
-  //     params.put("personId", personId);
-
-  //     String json = (String)mRestCall.request(uri, RequestMethod.POST, params, null);
-  //     return mGson.fromJson(json, VerifyResult.class);
-  // }
 }

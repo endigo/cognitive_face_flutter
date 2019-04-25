@@ -57,7 +57,7 @@ void main() {
     expect(faces1.length, 1);
     expect(faces2.length, 1);
 
-    VerifyResult result  = await client.verify(faces1.first.faceId, faces2.first.faceId);
+    VerifyResult result  = await client.verify(faces1.first.faceId, faceId2: faces2.first.faceId);
 
     expect(result.isIdentical, true);
     expect(result.confidence, greaterThan(.7));
@@ -76,7 +76,7 @@ void main() {
     expect(faces1.length, 1);
     expect(faces2.length, 1);
 
-    VerifyResult result  = await client.verify(faces1.first.faceId, faces2.first.faceId);
+    VerifyResult result  = await client.verify(faces1.first.faceId, faceId2: faces2.first.faceId);
 
     expect(result.isIdentical, false);
     expect(result.confidence, lessThanOrEqualTo(.5));
