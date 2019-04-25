@@ -6,7 +6,9 @@ import 'package:cognitive_face_flutter/cognitive_face_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 
+// Replace with your endpoint
 final endpoint = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0";
+// Replace with your key
 final key = "3080b54bd7c64a27801465608ca06a3e";
 
 void main() => runApp(MyApp());
@@ -55,9 +57,14 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   File image;
   List<Face> faces = [];
+  bool isLoading = false;
   final client = FaceServiceClient(key, serviceHost: endpoint);
 
   void _incrementCounter() async {
+    setState(() {
+      image = null;
+      faces = [];
+    });
     var maxWidth = MediaQuery.of(context).size.width;
     File _image = await ImagePicker.pickImage(
       source: ImageSource.gallery,
@@ -65,20 +72,13 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     if (_image != null) {
-      File croppedFile = await ImageCropper.cropImage(
-        sourcePath: _image.path,
-        ratioX: 1.0,
-        ratioY: 1.0,
-        maxWidth: maxWidth.toInt(),
-        maxHeight: maxWidth.toInt(),
-      );
-
-      _getImageSize(Image.file(croppedFile, fit: BoxFit.fitWidth)).then((Size size) {
+      _getImageSize(Image.file(_image, fit: BoxFit.fitWidth)).then((Size size) {
         print('CROPPED IMAGE WIDTH: ${size.width} HEIGHT: ${size.height}');
       });
 
       setState(() {
-        image = croppedFile;
+        image = _image;
+        isLoading = true;
       });
 
       List<Face> _faces = await client.detect(
@@ -87,8 +87,11 @@ class _MyHomePageState extends State<MyHomePage> {
         returnFaceLandmarks: true,
       );
 
+      print('DETECTED FACES: ${_faces.length}');
+
       setState(() {
         faces = _faces;
+        isLoading = false;
       });
     }
   }
@@ -99,21 +102,19 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            _buildImage(context),
-            FlatButton(
-              child: Text('Clear'),
-              onPressed: () {
-                setState(() {
-                  image = null;
-                  faces = null;
-                });
-              },
-            )
-          ],
-        ),
+      body: Column(
+        children: <Widget>[
+          _buildImage(context),
+          FlatButton(
+            child: Text('Clear'),
+            onPressed: () {
+              setState(() {
+                image = null;
+                faces = null;
+              });
+            },
+          )
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
@@ -125,15 +126,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildImage(BuildContext context) {
     if (image != null) {
-      List<Widget> children = [
-        SizedBox(
-          height: MediaQuery.of(context).size.width,
-          width: MediaQuery.of(context).size.width,
-          child: FutureBuilder<Size>(
-            future: _getImageSize(Image.file(image, fit: BoxFit.fitWidth)),
-            builder: (BuildContext context, AsyncSnapshot<Size> snapshot) {
-              if (snapshot.hasData) {
-                return Container(
+      return Container(
+        // height: MediaQuery.of(context).size.width,
+        width: MediaQuery.of(context).size.width,
+        child: FutureBuilder<Size>(
+          future: _getImageSize(Image.file(image, fit: BoxFit.fitWidth)),
+          builder: (BuildContext context, AsyncSnapshot<Size> snapshot) {
+            if (snapshot.hasData) {
+              return Stack(children: [
+                Container(
+                  width: snapshot.data.width,
+                  height: snapshot.data.height,
                   foregroundDecoration: FaceDetectDecoration(
                     faces,
                     snapshot.data,
@@ -142,19 +145,18 @@ class _MyHomePageState extends State<MyHomePage> {
                     image,
                     fit: BoxFit.fitWidth,
                   ),
-                );
-              } else {
-                return Text('Please wait...');
-              }
-            },
-          ),
+                ),
+                isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Container(),
+              ]);
+            } else {
+              return Text('Please wait...');
+            }
+          },
         ),
-      ];
-
-      children.addAll(_drawRectangle(context));
-
-      return Stack(
-        children: children,
       );
     }
 
@@ -163,38 +165,6 @@ class _MyHomePageState extends State<MyHomePage> {
       alignment: Alignment.center,
       child: Text('no picture'),
     );
-  }
-
-  List<Widget> _drawRectangle(BuildContext context) {
-    if (image == null) return [Container()];
-
-    if (faces == null)
-      return [
-        Center(
-          child: CircularProgressIndicator(),
-        )
-      ];
-
-    if (faces.isEmpty) {
-      return [Container()];
-    }
-
-    return faces.map((face) {
-      print(face.faceRectangle);
-      return Positioned(
-        top: face.faceRectangle.top.toDouble(),
-        left: face.faceRectangle.left.toDouble(),
-        child: Container(
-          width: face.faceRectangle.width.toDouble(),
-          height: face.faceRectangle.height.toDouble(),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.green,
-            ),
-          ),
-        ),
-      );
-    }).toList();
   }
 
   Future<Size> _getImageSize(Image image) {
@@ -212,7 +182,8 @@ class FaceDetectDecoration extends Decoration {
   FaceDetectDecoration(this.faces, this.originalImageSize);
 
   @override
-  BoxPainter createBoxPainter([VoidCallback onChanged]) => _FaceDetectPainter(faces, originalImageSize);
+  BoxPainter createBoxPainter([VoidCallback onChanged]) =>
+      _FaceDetectPainter(faces, originalImageSize);
 }
 
 class _FaceDetectPainter extends BoxPainter {
@@ -223,22 +194,17 @@ class _FaceDetectPainter extends BoxPainter {
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
     final paint = new Paint()
-      ..strokeWidth = 1.0
+      ..strokeWidth = 2.0
       ..color = Colors.red
       ..style = PaintingStyle.stroke;
-
-    print('originalImageSize: ${originalImageSize.width} ${originalImageSize.height}');
-    print('configuration: ${configuration.size.width} ${configuration.size.height}');
 
     final _heightRatio = originalImageSize.height / configuration.size.height;
     final _widthRatio = originalImageSize.width / configuration.size.width;
     for (var face in faces) {
       var width = face.faceRectangle.width / _widthRatio;
       var height = face.faceRectangle.height / _heightRatio;
-      var left = face.faceRectangle.left / _widthRatio;
-      var top = face.faceRectangle.top / _heightRatio;
-
-      print(face.faceRectangle);
+      var left = offset.dx + face.faceRectangle.left / _widthRatio;
+      var top = offset.dy + face.faceRectangle.top / _heightRatio;
 
       final _rect = Rect.fromLTWH(left, top, width, height);
 

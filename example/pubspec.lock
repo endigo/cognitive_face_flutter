@@ -25,11 +25,9 @@ packages:
   cognitive_face_flutter:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: fb224d98af247402b581c41ea2b897b4692927f0
-      url: "https://github.com/endigo/cognitive_face_flutter"
-    source: git
+      path: ".."
+      relative: true
+    source: path
     version: "0.0.1"
   collection:
     dependency: transitive
