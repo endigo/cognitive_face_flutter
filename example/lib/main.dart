@@ -1,11 +1,10 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-// import 'package:image';
-// import 'package:path';
-
 import 'package:cognitive_face_flutter/cognitive_face_flutter.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 final endpoint = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0";
 final key = "3080b54bd7c64a27801465608ca06a3e";
@@ -54,72 +53,65 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  File image;
+  List<Face> faces = [];
   final client = FaceServiceClient(key, serviceHost: endpoint);
 
   void _incrementCounter() async {
-    // var asset = 'assets/images/1.jpeg';
+    var maxWidth = MediaQuery.of(context).size.width;
+    File _image = await ImagePicker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: maxWidth,
+    );
 
-    // var dir = await getApplicationDocumentsDirectory();
-    // File file = File("${dir.path}/file.pdf");
-    // var data = await rootBundle.load(asset);
-    // var bytes = data.buffer.asUint8List();
-    // await file.writeAsBytes(bytes, flush: true);
+    if (_image != null) {
+      File croppedFile = await ImageCropper.cropImage(
+        sourcePath: _image.path,
+        ratioX: 1.0,
+        ratioY: 1.0,
+        maxWidth: maxWidth.toInt(),
+        maxHeight: maxWidth.toInt(),
+      );
 
-    // File image = File.fromRawPath(data.buffer.asUint8List());
+      _getImageSize(Image.file(croppedFile, fit: BoxFit.fitWidth)).then((Size size) {
+        print('CROPPED IMAGE WIDTH: ${size.width} HEIGHT: ${size.height}');
+      });
 
-    // List<Face> faces = await client.detect(
-    //   image: image,
-    //   returnFaceAttributes: FaceAttributeType.values,
-    //   returnFaceLandmarks: true,
-    // );
+      setState(() {
+        image = croppedFile;
+      });
 
-    // setState(() {
-    //   _counter = faces.length;
-    // });
+      List<Face> _faces = await client.detect(
+        image: _image,
+        returnFaceAttributes: FaceAttributeType.values,
+        returnFaceLandmarks: true,
+      );
+
+      setState(() {
+        faces = _faces;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
+            _buildImage(context),
+            FlatButton(
+              child: Text('Clear'),
+              onPressed: () {
+                setState(() {
+                  image = null;
+                  faces = null;
+                });
+              },
+            )
           ],
         ),
       ),
@@ -129,5 +121,128 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  Widget _buildImage(BuildContext context) {
+    if (image != null) {
+      List<Widget> children = [
+        SizedBox(
+          height: MediaQuery.of(context).size.width,
+          width: MediaQuery.of(context).size.width,
+          child: FutureBuilder<Size>(
+            future: _getImageSize(Image.file(image, fit: BoxFit.fitWidth)),
+            builder: (BuildContext context, AsyncSnapshot<Size> snapshot) {
+              if (snapshot.hasData) {
+                return Container(
+                  foregroundDecoration: FaceDetectDecoration(
+                    faces,
+                    snapshot.data,
+                  ),
+                  child: Image.file(
+                    image,
+                    fit: BoxFit.fitWidth,
+                  ),
+                );
+              } else {
+                return Text('Please wait...');
+              }
+            },
+          ),
+        ),
+      ];
+
+      children.addAll(_drawRectangle(context));
+
+      return Stack(
+        children: children,
+      );
+    }
+
+    return Container(
+      height: MediaQuery.of(context).size.height - 250.0,
+      alignment: Alignment.center,
+      child: Text('no picture'),
+    );
+  }
+
+  List<Widget> _drawRectangle(BuildContext context) {
+    if (image == null) return [Container()];
+
+    if (faces == null)
+      return [
+        Center(
+          child: CircularProgressIndicator(),
+        )
+      ];
+
+    if (faces.isEmpty) {
+      return [Container()];
+    }
+
+    return faces.map((face) {
+      print(face.faceRectangle);
+      return Positioned(
+        top: face.faceRectangle.top.toDouble(),
+        left: face.faceRectangle.left.toDouble(),
+        child: Container(
+          width: face.faceRectangle.width.toDouble(),
+          height: face.faceRectangle.height.toDouble(),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.green,
+            ),
+          ),
+        ),
+      );
+    }).toList();
+  }
+
+  Future<Size> _getImageSize(Image image) {
+    Completer<Size> completer = new Completer<Size>();
+    image.image.resolve(new ImageConfiguration()).addListener(
+        (ImageInfo info, bool _) => completer.complete(
+            Size(info.image.width.toDouble(), info.image.height.toDouble())));
+    return completer.future;
+  }
+}
+
+class FaceDetectDecoration extends Decoration {
+  final Size originalImageSize;
+  final List<Face> faces;
+  FaceDetectDecoration(this.faces, this.originalImageSize);
+
+  @override
+  BoxPainter createBoxPainter([VoidCallback onChanged]) => _FaceDetectPainter(faces, originalImageSize);
+}
+
+class _FaceDetectPainter extends BoxPainter {
+  final List<Face> faces;
+  final Size originalImageSize;
+  _FaceDetectPainter(this.faces, this.originalImageSize);
+
+  @override
+  void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
+    final paint = new Paint()
+      ..strokeWidth = 1.0
+      ..color = Colors.red
+      ..style = PaintingStyle.stroke;
+
+    print('originalImageSize: ${originalImageSize.width} ${originalImageSize.height}');
+    print('configuration: ${configuration.size.width} ${configuration.size.height}');
+
+    final _heightRatio = originalImageSize.height / configuration.size.height;
+    final _widthRatio = originalImageSize.width / configuration.size.width;
+    for (var face in faces) {
+      var width = face.faceRectangle.width / _widthRatio;
+      var height = face.faceRectangle.height / _heightRatio;
+      var left = face.faceRectangle.left / _widthRatio;
+      var top = face.faceRectangle.top / _heightRatio;
+
+      print(face.faceRectangle);
+
+      final _rect = Rect.fromLTWH(left, top, width, height);
+
+      canvas.drawRect(_rect, paint);
+    }
   }
 }
