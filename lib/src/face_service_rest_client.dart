@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cognitive_face_flutter/src/common/request_method.dart';
+import 'package:cognitive_face_flutter/src/contract/contract.dart';
 import 'package:cognitive_face_flutter/src/contract/face.dart';
 import 'package:cognitive_face_flutter/src/face_service_client.dart';
 import 'package:cognitive_face_flutter/src/rest/web_service_request.dart';
@@ -41,6 +42,8 @@ class FaceServiceClient {
     File image,
     bool returnFaceId = true,
     bool returnFaceLandmarks = false,
+    bool returnRecognitionModel = false,
+    String recognitionModel = "recognition_01",
     List<FaceAttributeType> returnFaceAttributes,
   }) async {
     assert(url != null || image != null);
@@ -52,6 +55,8 @@ class FaceServiceClient {
     Map<String, dynamic> params = {
       "returnFaceId": returnFaceId,
       "returnFaceLandmarks": returnFaceLandmarks,
+      "recognitionModel": recognitionModel,
+      "returnRecognitionModel": returnRecognitionModel,
     };
 
     if (returnFaceAttributes != null && returnFaceAttributes.isNotEmpty) {
@@ -62,6 +67,7 @@ class FaceServiceClient {
 
     String path = '$serviceHost/$DETECT_QUERY';
     String uri = WebServiceRequest.getUrl(path, params);
+    print(uri);
 
     List<dynamic> json;
 
@@ -82,10 +88,40 @@ class FaceServiceClient {
       );
     }
 
+    print((json as List).first['recognitionModel']);
+
     List<Face> faces = json
         .map((data) => Face.fromJson((data as Map<String, dynamic>)))
         .toList();
 
     return faces;
   }
+
+  Future<VerifyResult> verify(String faceId1, String faceId2) async {
+    Map<String, Object> params = {
+      "faceId1": faceId1,
+      "faceId2": faceId2,
+    };
+
+    String uri = '$serviceHost/$VERIFY_QUERY';
+
+    var json = await mRestCall.request(
+      uri,
+      method: RequestMethod.POST,
+      data: params,
+    );
+    return VerifyResult.fromJson((json as Map<String, dynamic>));
+  }
+
+  // VerifyResult verify(UUID faceId, String personGroupId, UUID personId) throws ClientException, IOException {
+  //     Map<String, Object> params = new HashMap<>();
+
+  //     String uri = String.format("%s/%s", mServiceHost, VERIFY_QUERY);
+  //     params.put("faceId", faceId);
+  //     params.put("personGroupId", personGroupId);
+  //     params.put("personId", personId);
+
+  //     String json = (String)mRestCall.request(uri, RequestMethod.POST, params, null);
+  //     return mGson.fromJson(json, VerifyResult.class);
+  // }
 }
