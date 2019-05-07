@@ -1,6 +1,6 @@
 name: cognitive_face_flutter
-description: "Microsoft Face API: Flutter Client Library & Sample"
-version: 0.0.1
+description: A Flutter plugin that providdes Microsoft Cognitive Face API
+version: 1.0.0+1
 author: endigo <endigo.18@gmail.com>
 homepage: https://github.com/endigo/cognitive_face_flutter
 
