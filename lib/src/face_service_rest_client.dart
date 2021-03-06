@@ -54,6 +54,7 @@ class FaceServiceClient {
     bool returnFaceId = true,
     bool returnFaceLandmarks = false,
     bool returnRecognitionModel = false,
+    String detectionModel = "detection_03",
     String recognitionModel = "recognition_01",
     List<FaceAttributeType> returnFaceAttributes,
   }) async {
